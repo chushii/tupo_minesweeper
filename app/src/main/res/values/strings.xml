@@ -3,4 +3,6 @@
     <string name="title_leaderboard">Лидерборд</string>
     <string name="title_mainpage">Главная</string>
     <string name="title_settings">Настройки</string>
+    <string name="mines_counter">Мины:</string>
+    <string name="button_reset">Новая игра</string>
 </resources>

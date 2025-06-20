@@ -24,8 +24,6 @@ class MainpageFragment : Fragment() {
         _binding = FragmentMainpageBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        binding.textMainpage.text = "Главный экран"
-
         return root
     }
 
