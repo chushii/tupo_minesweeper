@@ -6,8 +6,5 @@ import androidx.lifecycle.ViewModel
 
 class SettingsViewModel : ViewModel() {
 
-    private val _text = MutableLiveData<String>().apply {
-        value = "Экран настроек"
-    }
-    val text: LiveData<String> = _text
+    // это инструмент-сюрприз, который в будущем нам скорее всего пригодится
 }

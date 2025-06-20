@@ -6,8 +6,5 @@ import androidx.lifecycle.ViewModel
 
 class MainpageViewModel : ViewModel() {
 
-    private val _text = MutableLiveData<String>().apply {
-        value = "Главный экран"
-    }
-    val text: LiveData<String> = _text
+    // это инструмент-сюрприз, который в будущем нам скорее всего пригодится
 }

@@ -6,8 +6,5 @@ import androidx.lifecycle.ViewModel
 
 class LeaderboardViewModel : ViewModel() {
 
-    private val _text = MutableLiveData<String>().apply {
-        value = "Экран лидерборда"
-    }
-    val text: LiveData<String> = _text
+    // это инструмент-сюрприз, который в будущем нам скорее всего пригодится
 }

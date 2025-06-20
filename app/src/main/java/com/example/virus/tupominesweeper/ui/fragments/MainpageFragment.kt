@@ -12,9 +12,6 @@ import com.example.virus.tupominesweeper.databinding.FragmentMainpageBinding
 class MainpageFragment : Fragment() {
 
     private var _binding: FragmentMainpageBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -24,14 +21,11 @@ class MainpageFragment : Fragment() {
     ): View {
         val mainpageViewModel =
             ViewModelProvider(this).get(MainpageViewModel::class.java)
-
         _binding = FragmentMainpageBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.textHome
-        mainpageViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
-        }
+        binding.textMainpage.text = "Главный экран"
+
         return root
     }
 

@@ -12,9 +12,6 @@ import com.example.virus.tupominesweeper.databinding.FragmentLeaderboardBinding
 class LeaderboardFragment : Fragment() {
 
     private var _binding: FragmentLeaderboardBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -24,14 +21,11 @@ class LeaderboardFragment : Fragment() {
     ): View {
         val leaderboardViewModel =
             ViewModelProvider(this).get(LeaderboardViewModel::class.java)
-
         _binding = FragmentLeaderboardBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.textDashboard
-        leaderboardViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
-        }
+        binding.textLeaderboard.text = "Экран лидерборда"
+
         return root
     }
 
