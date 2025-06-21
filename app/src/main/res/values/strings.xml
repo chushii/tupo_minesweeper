@@ -1,8 +1,13 @@
 <resources>
     <string name="app_name">Тупо Сапёр</string>
+    <string name="app_version">Версия v0.1.2</string>
     <string name="title_leaderboard">Лидерборд</string>
     <string name="title_mainpage">Главная</string>
     <string name="title_settings">Настройки</string>
     <string name="mines_counter">Мины:</string>
     <string name="button_reset">Новая игра</string>
+    <string name="setting_difficulty">Уровень сложности:</string>
+    <string name="setting_theme">Тема:</string>
+    <string name="setting_vibration">Включить вибрацию</string>
+    <string name="setting_inverter">Инвертировать нажатие/удерживание</string>
 </resources>
