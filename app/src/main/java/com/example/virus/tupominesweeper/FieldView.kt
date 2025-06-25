@@ -4,12 +4,17 @@ import android.content.Context
 import androidx.core.content.ContextCompat
 import android.graphics.Canvas
 import android.graphics.Paint
+import android.os.Build
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.util.AttributeSet
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.ScaleGestureDetector
 import android.view.View
 import com.example.virus.tupominesweeper.stuff.GameStatePreferences
+import com.example.virus.tupominesweeper.stuff.SettingsPreferences
+import com.example.virus.tupominesweeper.stuff.VibratorControl
 import com.example.virus.tupominesweeper.viewmodels.MainpageViewModel
 import com.example.virus.tupominesweeper.viewmodels.SettingsViewModel
 import java.util.Random
@@ -50,6 +55,9 @@ class FieldView @JvmOverloads constructor(
     private val paint = Paint()
 
     private var viewModel: MainpageViewModel? = null
+
+    var startTime = -1L
+    var isTimerRunning = false
 
     val col_cellClosed = ContextCompat.getColor(context, R.color.field_cellClosed)
     val col_cellOpened = ContextCompat.getColor(context, R.color.field_cellOpened)
@@ -401,6 +409,7 @@ class FieldView @JvmOverloads constructor(
         cell.flagged = false
 
         if (cell.mine) {
+            VibratorControl.vibrateLong(context)
             gameEnded = true
             hasWon = false
             viewModel!!.updateGameOver(gameEnded, hasWon)
@@ -429,6 +438,7 @@ class FieldView @JvmOverloads constructor(
     private fun flagCell(row: Int, col: Int) {
         val cell = cells[row][col]
         if (!cell.revealed) {
+            VibratorControl.vibrateShort(context)
             cell.flagged = !cell.flagged
             checkWinCondition(row, col)
             invalidate()
@@ -440,11 +450,15 @@ class FieldView @JvmOverloads constructor(
             if (it.mine) it.flagged else true
         }
 
+        val allFlagsAreCorrect = cells.flatten().none {
+            it.flagged && !it.mine
+        }
+
         val allRevealed = cells.flatten().all {
             it.revealed || it.mine
         }
 
-        if (allMinesFlagged || allRevealed) {
+        if ((allMinesFlagged || allRevealed) && allFlagsAreCorrect) {
             gameEnded = true
             hasWon = true
             viewModel!!.updateGameOver(gameEnded, hasWon)

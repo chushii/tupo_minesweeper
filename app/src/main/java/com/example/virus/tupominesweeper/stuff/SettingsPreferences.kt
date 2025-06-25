@@ -10,7 +10,7 @@ object SettingsPreferences {
     private val COLS_KEY = "cols"
     private val MINES_KEY = "mines"
     internal val THEME_KEY = "theme"
-    private val VIBRATION_KEY = "vibration"
+    internal val VIBRATION_KEY = "vibration"
     private val INVERT_KEY = "invert"
 
     fun saveTheme(context: Context, theme: Int) {

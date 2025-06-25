@@ -91,7 +91,7 @@ class SettingsFragment : Fragment() {
         }
 
         binding.VibrationSwitch.isChecked = app_settings.vibration
-        binding.InverterSwitch.setOnCheckedChangeListener { _, isChecked ->
+        binding.VibrationSwitch.setOnCheckedChangeListener { _, isChecked ->
             settingsViewModel.setVibration(isChecked)
             SettingsPreferences.saveVibration(requireContext(), isChecked)
         }

@@ -36,6 +36,13 @@ class MainpageViewModel : ViewModel() {
         )
     }
 
+    fun getMinesCounter(cells: Array<Array<Cell>>, mines: Int): Int {
+        val flags = cells.sumOf { row ->
+            row.count { it.flagged }
+        }
+        return mines - flags
+    }
+
     data class GameState(
         val rows: Int,
         val cols: Int,

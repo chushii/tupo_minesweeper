@@ -55,6 +55,7 @@ class MainpageFragment : Fragment() {
 
         mainpageViewModel.game_state.observe(viewLifecycleOwner) { state ->
             GameStatePreferences.saveGameState(requireContext(), state)
+            binding.Counter.text = mainpageViewModel.getMinesCounter(state!!.cells, state!!.mineCount).toString()
         }
 
         return root
