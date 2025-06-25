@@ -43,9 +43,9 @@ object SettingsPreferences {
     fun loadGameSettings(context: Context): SettingsViewModel.GameSettings {
         val sharedPref = context.getSharedPreferences(NAME, Context.MODE_PRIVATE)
         val diff = sharedPref.getInt(DIFF_KEY, 0)
-        val rows = sharedPref.getInt(ROWS_KEY, 20)
-        val cols = sharedPref.getInt(COLS_KEY, 20)
-        val mines = sharedPref.getInt(MINES_KEY, 40)
+        val rows = sharedPref.getInt(ROWS_KEY, 9)
+        val cols = sharedPref.getInt(COLS_KEY, 9)
+        val mines = sharedPref.getInt(MINES_KEY, 10)
         return SettingsViewModel.GameSettings(diff, rows, cols, mines)
     }
 

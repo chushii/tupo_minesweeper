@@ -24,7 +24,6 @@ class MainpageFragment : Fragment() {
     ): View {
         val savedState = GameStatePreferences.loadGameState(requireContext())
         val game_settings = SettingsPreferences.loadGameSettings(requireContext())
-        val app_settings = SettingsPreferences.loadAppSettings(requireContext())
         val mainpageViewModel =
             ViewModelProvider(this).get(MainpageViewModel::class.java)
         val settingsViewModel =

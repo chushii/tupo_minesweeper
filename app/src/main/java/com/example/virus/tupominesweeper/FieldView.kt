@@ -25,10 +25,10 @@ class FieldView @JvmOverloads constructor(
 {
     private var baseCellSize = 60.dpToPx(resources.displayMetrics.density)
     private var cellSize: Float = baseCellSize
-    private var diff = -1
-    private var rows = -1
-    private var cols = -1
-    private var mineCount = -1
+    private var diff = 0
+    private var rows = 9
+    private var cols = 9
+    private var mineCount = 10
 
     private lateinit var cells: Array<Array<MainpageViewModel.Cell>>
 

@@ -36,31 +36,31 @@ class SettingsFragment : Fragment() {
         if (game_settings.diff in 0 until diff_adapter.count) {
             binding.DiffChoice.setSelection(game_settings.diff)
             when (game_settings.diff) {
-                0 -> settingsViewModel.setGameSettings(0,20, 20, 40)
-                1 -> settingsViewModel.setGameSettings(1,20, 20, 50)
-                2 -> settingsViewModel.setGameSettings(2,20, 20, 60)
-                else -> settingsViewModel.setGameSettings(3,20, 20, 70)
+                0 -> settingsViewModel.setGameSettings(0,9, 9, 10)
+                1 -> settingsViewModel.setGameSettings(1,16, 16, 40)
+                2 -> settingsViewModel.setGameSettings(2,30, 16, 99)
+                else -> settingsViewModel.setGameSettings(3,5, 5, 1)
             }
         }
         binding.DiffChoice.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 val rows = when (position) {
-                    0 -> 20
-                    1 -> 20
-                    2 -> 20
-                    else -> 20
+                    0 -> 9
+                    1 -> 16
+                    2 -> 30
+                    else -> 5
                 }
                 val cols = when (position) {
-                    0 -> 20
-                    1 -> 20
-                    2 -> 20
-                    else -> 20
+                    0 -> 9
+                    1 -> 16
+                    2 -> 16
+                    else -> 5
                 }
                 val mines = when (position) {
-                    0 -> 40
-                    1 -> 50
-                    2 -> 60
-                    else -> 70
+                    0 -> 10
+                    1 -> 40
+                    2 -> 99
+                    else -> 1
                 }
                 settingsViewModel.setGameSettings(position, rows, cols, mines)
                 SettingsPreferences.saveGameSettings(requireContext(), position, rows, cols, mines)

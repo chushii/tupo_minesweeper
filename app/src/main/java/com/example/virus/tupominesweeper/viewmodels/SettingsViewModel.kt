@@ -8,9 +8,9 @@ class SettingsViewModel : ViewModel() {
     private val _game_settings = MutableLiveData<GameSettings>().apply {
         value = GameSettings(
             diff = 0,
-            rows = 20,
-            cols = 20,
-            mineCount = 40
+            rows = 9,
+            cols = 9,
+            mineCount = 10
         )
     }
 
