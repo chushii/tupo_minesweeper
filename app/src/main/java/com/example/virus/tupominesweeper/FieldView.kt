@@ -8,21 +8,29 @@ import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.ScaleGestureDetector
 import android.view.View
+import com.example.virus.tupominesweeper.stuff.GameStatePreferences
+import com.example.virus.tupominesweeper.viewmodels.MainpageViewModel
+import com.example.virus.tupominesweeper.viewmodels.SettingsViewModel
 import java.util.Random
 import kotlin.math.abs
-import kotlin.math.ceil
 import kotlin.math.floor
 import kotlin.math.max
 import kotlin.math.min
 
-class FieldView(context: Context, attrs: AttributeSet) : View(context, attrs) {
+class FieldView @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) : View(context, attrs, defStyleAttr)
+{
     private var baseCellSize = 60.dpToPx(resources.displayMetrics.density)
     private var cellSize: Float = baseCellSize
-    private var rows = 20
-    private var cols = 20
-    private var mineCount = 40
+    private var diff = -1
+    private var rows = -1
+    private var cols = -1
+    private var mineCount = -1
 
-    private var cells = Array(rows) { Array(cols) { Cell() } }
+    private lateinit var cells: Array<Array<MainpageViewModel.Cell>>
 
     private var offsetX = 0f
     private var offsetY = 0f
@@ -40,26 +48,36 @@ class FieldView(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
     private val paint = Paint()
 
-    fun setupGame(rows: Int, cols: Int, mineCount: Int) {
-        this.rows = rows
-        this.cols = cols
-        this.mineCount = mineCount
+    private var viewModel: MainpageViewModel? = null
 
-        if (cells.isEmpty() || cells.size != rows || cells[0].size != cols) {
-            resetGame()
-        } else {
-            invalidate()
-        }
+    fun setViewModel(viewModel: MainpageViewModel) {
+        this.viewModel = viewModel
     }
 
-    fun resetGame() {
+    fun restoreGame(state: MainpageViewModel.GameState) {
+        rows = state.rows
+        cols = state.cols
+        mineCount = state.mineCount
+        cells = state.cells
+        gameEnded = state.gameEnded
+        hasWon = state.hasWon
+        minesGenerated = state.minesGenerated
+        invalidate()
+    }
+
+    fun resetGame(settings: SettingsViewModel.GameSettings) {
+        diff = settings.diff
+        rows = settings.rows
+        cols = settings.cols
+        mineCount = settings.mineCount
         cellSize = baseCellSize
         gameEnded = false
         hasWon = false
         minesGenerated = false
         firstClickRow = -1
         firstClickCol = -1
-        cells = Array(rows) { Array(cols) { Cell() } }
+        cells = Array(rows) { Array(cols) { MainpageViewModel.Cell() } }
+        viewModel!!.resetGame(rows, cols, mineCount)
         invalidate()
     }
 
@@ -111,7 +129,7 @@ class FieldView(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
         // Рисуем сетку (черные линии)
         paint.color = android.graphics.Color.BLACK
-        paint.strokeWidth = 2f
+        paint.strokeWidth = 2f * (cellSize / baseCellSize)
 
         // Горизонтальные линии
         canvas.drawLine(
@@ -187,6 +205,8 @@ class FieldView(context: Context, attrs: AttributeSet) : View(context, attrs) {
             (rows * cellSize) / 2,
             paint
         )
+
+        GameStatePreferences.deleteSavedGame(context)
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
@@ -238,14 +258,12 @@ class FieldView(context: Context, attrs: AttributeSet) : View(context, attrs) {
         }
 
         override fun onSingleTapUp(e: MotionEvent): Boolean {
-            if (invertControls) handleCellLongPress(e.x, e.y)
-            else handleCellTap(e.x, e.y)
+            handleCellTap(e.x, e.y)
             return true
         }
 
         override fun onLongPress(e: MotionEvent) {
-            if (invertControls) handleCellTap(e.x, e.y)
-            else handleCellLongPress(e.x, e.y)
+            handleCellLongPress(e.x, e.y)
         }
     }
 
@@ -273,6 +291,7 @@ class FieldView(context: Context, attrs: AttributeSet) : View(context, attrs) {
                 generateMinesAvoiding(row, col)
                 calculateNumbers()
                 minesGenerated = true
+                viewModel!!.updateMinesGenerated()
                 firstClickRow = row
                 firstClickCol = col
             }
@@ -299,6 +318,7 @@ class FieldView(context: Context, attrs: AttributeSet) : View(context, attrs) {
                 generateMinesAvoiding(row, col)
                 calculateNumbers()
                 minesGenerated = true
+                viewModel!!.updateMinesGenerated()
                 firstClickRow = row
                 firstClickCol = col
             }
@@ -317,8 +337,6 @@ class FieldView(context: Context, attrs: AttributeSet) : View(context, attrs) {
         while (placed < mineCount) {
             val row = random.nextInt(rows)
             val col = random.nextInt(cols)
-
-            // Проверяем, находится ли точка в окрестности (rowAvoid, colAvoid)
             val isNearFirstClick = abs(row - rowAvoid) <= 1 && abs(col - colAvoid) <= 1
             if (isNearFirstClick || cells[row][col].mine) continue
 
@@ -337,6 +355,7 @@ class FieldView(context: Context, attrs: AttributeSet) : View(context, attrs) {
         if (cell.mine) {
             gameEnded = true
             hasWon = false
+            viewModel!!.updateGameOver(gameEnded, hasWon)
             revealAllMines()
             invalidate()
             return
@@ -355,7 +374,7 @@ class FieldView(context: Context, attrs: AttributeSet) : View(context, attrs) {
             }
         }
 
-        checkWinCondition()
+        checkWinCondition(row, col)
         invalidate()
     }
 
@@ -363,12 +382,12 @@ class FieldView(context: Context, attrs: AttributeSet) : View(context, attrs) {
         val cell = cells[row][col]
         if (!cell.revealed) {
             cell.flagged = !cell.flagged
-            checkWinCondition()
+            checkWinCondition(row, col)
             invalidate()
         }
     }
 
-    private fun checkWinCondition() {
+    private fun checkWinCondition(row: Int, col: Int) {
         val allMinesFlagged = cells.flatten().all {
             if (it.mine) it.flagged else true
         }
@@ -380,7 +399,15 @@ class FieldView(context: Context, attrs: AttributeSet) : View(context, attrs) {
         if (allMinesFlagged || allRevealed) {
             gameEnded = true
             hasWon = true
+            viewModel!!.updateGameOver(gameEnded, hasWon)
             invalidate()
+        }
+        else {
+            val cell = cells[row][col]
+            val newCells = cells.map { it.copyOf() }.toTypedArray()
+            newCells[row][col] = cell.copy()
+            viewModel!!.updateGameStateCells(newCells)
+            val e = 5
         }
     }
 
@@ -413,13 +440,6 @@ class FieldView(context: Context, attrs: AttributeSet) : View(context, attrs) {
             }
         }
     }
-
-    data class Cell(
-        var mine: Boolean = false,
-        var adjacentMines: Int = 0,
-        var revealed: Boolean = false,
-        var flagged: Boolean = false
-    )
 
     private fun Int.dpToPx(density: Float): Float {
         return this * density + 0.5f

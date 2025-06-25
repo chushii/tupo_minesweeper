@@ -1,7 +1,5 @@
-package com.example.virus.tupominesweeper.ui.fragments
+package com.example.virus.tupominesweeper.viewmodels
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
 class LeaderboardViewModel : ViewModel() {

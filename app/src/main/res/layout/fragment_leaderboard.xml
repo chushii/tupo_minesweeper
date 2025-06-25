@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingBottom="@dimen/bottom_nav_menu_height"
-    tools:context=".ui.fragments.LeaderboardFragment">
+    tools:context=".fragments.LeaderboardFragment">
 
     <TextView
         android:id="@+id/SettingDifficulty"
