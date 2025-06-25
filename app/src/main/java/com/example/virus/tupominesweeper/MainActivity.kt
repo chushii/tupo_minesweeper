@@ -6,12 +6,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.virus.tupominesweeper.databinding.ActivityMainBinding
+import com.example.virus.tupominesweeper.stuff.ThemeSwitcher
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        ThemeSwitcher.setTheme(this, ThemeSwitcher.loadTheme(this))
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)

@@ -4,12 +4,12 @@ import android.content.Context
 import com.example.virus.tupominesweeper.viewmodels.SettingsViewModel
 
 object SettingsPreferences {
-    private val NAME = "settings"
+    internal val NAME = "settings"
     private val DIFF_KEY = "diff"
     private val ROWS_KEY = "rows"
     private val COLS_KEY = "cols"
     private val MINES_KEY = "mines"
-    private val THEME_KEY = "theme"
+    internal val THEME_KEY = "theme"
     private val VIBRATION_KEY = "vibration"
     private val INVERT_KEY = "invert"
 

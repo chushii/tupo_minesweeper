@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.virus.tupominesweeper.databinding.FragmentSettingsBinding
 import com.example.virus.tupominesweeper.stuff.SettingsPreferences
+import com.example.virus.tupominesweeper.stuff.ThemeSwitcher
 import com.example.virus.tupominesweeper.viewmodels.SettingsViewModel
 
 class SettingsFragment : Fragment() {
@@ -81,7 +82,7 @@ class SettingsFragment : Fragment() {
         binding.ThemeChoice.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 settingsViewModel.setTheme(position)
-                SettingsPreferences.saveTheme(requireContext(), position)
+                ThemeSwitcher.setTheme(requireContext(), position)
             }
 
             override fun onNothingSelected(p0: AdapterView<*>?) {
