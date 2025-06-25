@@ -1,6 +1,7 @@
 package com.example.virus.tupominesweeper
 
 import android.content.Context
+import androidx.core.content.ContextCompat
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.util.AttributeSet
@@ -49,6 +50,28 @@ class FieldView @JvmOverloads constructor(
     private val paint = Paint()
 
     private var viewModel: MainpageViewModel? = null
+
+    val col_cellClosed = ContextCompat.getColor(context, R.color.field_cellClosed)
+    val col_cellOpened = ContextCompat.getColor(context, R.color.field_cellOpened)
+    val col_grid = ContextCompat.getColor(context, R.color.field_grid)
+    val col_num1 = ContextCompat.getColor(context, R.color.field_num1)
+    val col_num2 = ContextCompat.getColor(context, R.color.field_num2)
+    val col_num3 = ContextCompat.getColor(context, R.color.field_num3)
+    val col_num4 = ContextCompat.getColor(context, R.color.field_num4)
+    val col_num5 = ContextCompat.getColor(context, R.color.field_num5)
+    val col_num6 = ContextCompat.getColor(context, R.color.field_num6)
+    val col_num7 = ContextCompat.getColor(context, R.color.field_num7)
+    val col_num8 = ContextCompat.getColor(context, R.color.field_num8)
+
+    val ic_flag = ContextCompat.getDrawable(context, R.drawable.ic_flag)
+    val ic_mine = ContextCompat.getDrawable(context, R.drawable.ic_mine)
+
+    init {
+        ic_flag?.setBounds(0, 0, cellSize.toInt(), cellSize.toInt())
+        ic_mine?.setBounds(0, 0, cellSize.toInt(), cellSize.toInt())
+        ic_flag?.setTint(ContextCompat.getColor(context, R.color.field_num7))
+        ic_mine?.setTint(ContextCompat.getColor(context, R.color.field_num7))
+    }
 
     fun setViewModel(viewModel: MainpageViewModel) {
         this.viewModel = viewModel
@@ -109,13 +132,13 @@ class FieldView @JvmOverloads constructor(
 
         when {
             cell.revealed -> {
-                paint.color = android.graphics.Color.LTGRAY
+                paint.color = col_cellOpened
             }
             cell.flagged -> {
-                paint.color = android.graphics.Color.YELLOW
+                paint.color = col_cellClosed
             }
             else -> {
-                paint.color = android.graphics.Color.DKGRAY
+                paint.color = col_cellClosed
             }
         }
 
@@ -127,9 +150,25 @@ class FieldView @JvmOverloads constructor(
             paint
         )
 
-        // Рисуем сетку (черные линии)
-        paint.color = android.graphics.Color.BLACK
-        paint.strokeWidth = 2f * (cellSize / baseCellSize)
+        if (cell.flagged) {
+            if (cell.mine && gameEnded)
+                ic_flag?.setTint(ContextCompat.getColor(context, R.color.field_num2))
+            else if (!cell.mine && gameEnded)
+                ic_flag?.setTint(ContextCompat.getColor(context, R.color.field_num3))
+            ic_flag?.let { flag ->
+                flag.setBounds(
+                    (col * cellSize).toInt(),
+                    (row * cellSize).toInt(),
+                    ((col + 1) * cellSize).toInt(),
+                    ((row + 1) * cellSize).toInt()
+                )
+                flag.draw(canvas)
+                ic_flag?.setTint(ContextCompat.getColor(context, R.color.field_num7))
+            }
+        }
+
+        paint.color = col_grid
+        paint.strokeWidth = 5f * (cellSize / baseCellSize)
 
         // Горизонтальные линии
         canvas.drawLine(
@@ -164,26 +203,32 @@ class FieldView @JvmOverloads constructor(
         )
 
         if (cell.revealed) {
-            if (cell.mine) {
-                paint.color = android.graphics.Color.BLACK
-                canvas.drawCircle(
-                    (col + 0.5f) * cellSize,
-                    (row + 0.5f) * cellSize,
-                    cellSize / 3f,
-                    paint
-                )
+            if (cell.mine && !cell.flagged) {
+                ic_mine?.let { mine ->
+                    mine.setBounds(
+                        (col * cellSize).toInt(),
+                        (row * cellSize).toInt(),
+                        ((col + 1) * cellSize).toInt(),
+                        ((row + 1) * cellSize).toInt()
+                    )
+                    mine.draw(canvas)
+                }
             } else if (cell.adjacentMines > 0) {
-                paint.textSize = 30f
+                paint.textSize = 100f * (cellSize / baseCellSize)
                 paint.color = when (cell.adjacentMines) {
-                    1 -> android.graphics.Color.BLUE
-                    2 -> android.graphics.Color.GREEN
-                    3 -> android.graphics.Color.RED
-                    else -> android.graphics.Color.BLACK
+                    1 -> col_num1
+                    2 -> col_num2
+                    3 -> col_num3
+                    4 -> col_num4
+                    5 -> col_num5
+                    6 -> col_num6
+                    7 -> col_num7
+                    else -> col_num8
                 }
                 canvas.drawText(
                     "${cell.adjacentMines}",
-                    col * cellSize + 20,
-                    row * cellSize + 40,
+                    col * cellSize + (cellSize / 2.8f),
+                    row * cellSize + (cellSize / 1.4f),
                     paint
                 )
             }
@@ -194,9 +239,9 @@ class FieldView @JvmOverloads constructor(
         paint.color = android.graphics.Color.parseColor("#88000000")
         canvas.drawRect(0f, 0f, cols * cellSize, rows * cellSize, paint)
 
-        paint.textSize = 50f
+        paint.textSize = 100f * (cellSize / baseCellSize)
         paint.color = android.graphics.Color.WHITE
-        val text = if (hasWon) "Победа!" else "Проиграл :("
+        val text = if (hasWon) "Победа!" else "ПОМЕР"
 
         val textWidth = paint.measureText(text)
         canvas.drawText(
@@ -227,6 +272,9 @@ class FieldView @JvmOverloads constructor(
 
             offsetX = focusX - ((focusX - offsetX) / oldCellSize) * cellSize
             offsetY = focusY - ((focusY - offsetY) / oldCellSize) * cellSize
+
+            ic_flag?.setBounds(0, 0, cellSize.toInt(), cellSize.toInt())
+            ic_mine?.setBounds(0, 0, cellSize.toInt(), cellSize.toInt())
 
             invalidate()
             return true
