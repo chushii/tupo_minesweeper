@@ -23,6 +23,7 @@ class SettingsFragment : Fragment() {
 
     private var _binding: FragmentSettingsBinding? = null
     private val binding get() = _binding!!
+    private var lastSelectedPosition = -1
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -53,6 +54,9 @@ class SettingsFragment : Fragment() {
         }
         binding.DiffChoice.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                if (position == lastSelectedPosition) return
+                lastSelectedPosition = position
+
                 if (position == 3) {
                     showCustomDiffDialog()
                 }
@@ -137,7 +141,7 @@ class SettingsFragment : Fragment() {
         customMines.setText(game_settings.mineCount.toString())
 
         val dialog = MaterialAlertDialogBuilder(context)
-            .setTitle("Пользовательские настройки поля")
+            .setTitle("Настройки поля")
             .setView(dialogView)
             .setPositiveButton("Принять", null)
             .setNegativeButton("Отмена", null)
@@ -174,12 +178,12 @@ class SettingsFragment : Fragment() {
                     return@setOnClickListener
                 }
 
-                if (rows > 40 || cols > 40) {
-                    Toast.makeText(context, "Максимальный размер поля: 40х40", Toast.LENGTH_SHORT).show()
+                if (rows > 30 || cols > 30) {
+                    Toast.makeText(context, "Максимальный размер поля: 30х30", Toast.LENGTH_SHORT).show()
                     return@setOnClickListener
                 }
 
-                if (mines - 9 > rows * cols) {
+                if (mines > rows * cols - 9) {
                     val max = rows * cols - 9
                     Toast.makeText(context, "Максимум мин для этого поля: ${max}", Toast.LENGTH_SHORT).show()
                     return@setOnClickListener
