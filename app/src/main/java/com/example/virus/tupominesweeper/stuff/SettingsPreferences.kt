@@ -13,11 +13,6 @@ object SettingsPreferences {
     internal val VIBRATION_KEY = "vibration"
     private val INVERT_KEY = "invert"
 
-    fun saveTheme(context: Context, theme: Int) {
-        val sharedPref = context.getSharedPreferences(NAME, Context.MODE_PRIVATE)
-        sharedPref.edit().putInt(THEME_KEY, theme).apply()
-    }
-
     fun saveVibration(context: Context, vibration: Boolean) {
         val sharedPref = context.getSharedPreferences(NAME, Context.MODE_PRIVATE)
         sharedPref.edit().putBoolean(VIBRATION_KEY, vibration).apply()

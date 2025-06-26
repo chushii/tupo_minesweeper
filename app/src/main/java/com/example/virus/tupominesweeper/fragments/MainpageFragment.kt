@@ -78,7 +78,7 @@ class MainpageFragment : Fragment() {
             }
             GameStatePreferences.saveGameState(requireContext(), state)
             GameStatePreferences.saveTimeSpent(requireContext(), gameTimerViewModel.elapsedTime.value ?: 0)
-            binding.Counter.text = mainpageViewModel.getMinesCounter(state!!.cells, state!!.mineCount).toString()
+            binding.Counter.text = mainpageViewModel.getMinesCounter(state.cells, state.mineCount).toString()
         }
 
         gameTimerViewModel.elapsedTime.observe(viewLifecycleOwner) { time ->

@@ -4,16 +4,12 @@ import android.content.Context
 import androidx.core.content.ContextCompat
 import android.graphics.Canvas
 import android.graphics.Paint
-import android.os.Build
-import android.os.VibrationEffect
-import android.os.Vibrator
 import android.util.AttributeSet
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.ScaleGestureDetector
 import android.view.View
 import com.example.virus.tupominesweeper.stuff.GameStatePreferences
-import com.example.virus.tupominesweeper.stuff.SettingsPreferences
 import com.example.virus.tupominesweeper.stuff.VibratorControl
 import com.example.virus.tupominesweeper.viewmodels.MainpageViewModel
 import com.example.virus.tupominesweeper.viewmodels.SettingsViewModel
@@ -55,9 +51,6 @@ class FieldView @JvmOverloads constructor(
     private val paint = Paint()
 
     private var viewModel: MainpageViewModel? = null
-
-    var startTime = -1L
-    var isTimerRunning = false
 
     val col_cellClosed = ContextCompat.getColor(context, R.color.field_cellClosed)
     val col_cellOpened = ContextCompat.getColor(context, R.color.field_cellOpened)
@@ -171,7 +164,7 @@ class FieldView @JvmOverloads constructor(
                     ((row + 1) * cellSize).toInt()
                 )
                 flag.draw(canvas)
-                ic_flag?.setTint(ContextCompat.getColor(context, R.color.field_num7))
+                ic_flag.setTint(ContextCompat.getColor(context, R.color.field_num7))
             }
         }
 
