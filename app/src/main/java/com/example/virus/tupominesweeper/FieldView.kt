@@ -469,7 +469,6 @@ class FieldView @JvmOverloads constructor(
             val newCells = cells.map { it.copyOf() }.toTypedArray()
             newCells[row][col] = cell.copy()
             viewModel!!.updateGameStateCells(newCells)
-            val e = 5
         }
     }
 

@@ -7,6 +7,7 @@ import com.google.gson.Gson
 object GameStatePreferences {
     private val NAME = "game_state"
     private val JSON_KEY = NAME
+    private val TIME_KEY = "time_spent"
 
     fun saveGameState(context: Context, state: MainpageViewModel.GameState?) {
         val sharedPref = context.getSharedPreferences(NAME, Context.MODE_PRIVATE)
@@ -25,5 +26,15 @@ object GameStatePreferences {
     fun deleteSavedGame(context: Context) {
         val sharedPref = context.getSharedPreferences(NAME, Context.MODE_PRIVATE)
         sharedPref.edit().remove(JSON_KEY).apply()
+    }
+
+    fun saveTimeSpent(context: Context, time: Long) {
+        val sharedPref = context.getSharedPreferences(NAME, Context.MODE_PRIVATE)
+        sharedPref.edit().putLong(TIME_KEY, time).apply()
+    }
+
+    fun loadTimeSpent(context: Context): Long {
+        val sharedPref = context.getSharedPreferences(NAME, Context.MODE_PRIVATE)
+        return sharedPref.getLong(TIME_KEY, 0)
     }
 }
