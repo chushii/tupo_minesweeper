@@ -1,17 +1,23 @@
 package com.example.virus.tupominesweeper.fragments
 
+import android.annotation.SuppressLint
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.EditText
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.example.virus.tupominesweeper.R
 import com.example.virus.tupominesweeper.databinding.FragmentSettingsBinding
 import com.example.virus.tupominesweeper.stuff.SettingsPreferences
 import com.example.virus.tupominesweeper.stuff.ThemeSwitcher
 import com.example.virus.tupominesweeper.viewmodels.SettingsViewModel
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class SettingsFragment : Fragment() {
 
@@ -38,36 +44,40 @@ class SettingsFragment : Fragment() {
         diff_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.DiffChoice.setAdapter(diff_adapter)
         if (game_settings.diff in 0 until diff_adapter.count) {
-            binding.DiffChoice.setSelection(game_settings.diff)
-            when (game_settings.diff) {
-                0 -> settingsViewModel.setGameSettings(0,9, 9, 10)
-                1 -> settingsViewModel.setGameSettings(1,16, 16, 40)
-                2 -> settingsViewModel.setGameSettings(2,30, 16, 99)
-                else -> settingsViewModel.setGameSettings(3,5, 5, 1)
-            }
+            val diff = game_settings.diff
+            val rows = game_settings.rows
+            val cols = game_settings.cols
+            val mines = game_settings.mineCount
+            binding.DiffChoice.setSelection(diff)
+            settingsViewModel.setGameSettings(diff,rows, cols, mines)
         }
         binding.DiffChoice.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                val rows = when (position) {
-                    0 -> 9
-                    1 -> 16
-                    2 -> 30
-                    else -> 5
+                if (position == 3) {
+                    showCustomDiffDialog()
                 }
-                val cols = when (position) {
-                    0 -> 9
-                    1 -> 16
-                    2 -> 16
-                    else -> 5
+                else {
+                    val rows = when (position) {
+                        0 -> 9
+                        1 -> 16
+                        2 -> 30
+                        else -> 9
+                    }
+                    val cols = when (position) {
+                        0 -> 9
+                        1 -> 16
+                        2 -> 16
+                        else -> 9
+                    }
+                    val mines = when (position) {
+                        0 -> 10
+                        1 -> 40
+                        2 -> 99
+                        else -> 10
+                    }
+                    settingsViewModel.setGameSettings(position, rows, cols, mines)
+                    SettingsPreferences.saveGameSettings(requireContext(), position, rows, cols, mines)
                 }
-                val mines = when (position) {
-                    0 -> 10
-                    1 -> 40
-                    2 -> 99
-                    else -> 1
-                }
-                settingsViewModel.setGameSettings(position, rows, cols, mines)
-                SettingsPreferences.saveGameSettings(requireContext(), position, rows, cols, mines)
             }
 
             override fun onNothingSelected(p0: AdapterView<*>?) {
@@ -108,6 +118,79 @@ class SettingsFragment : Fragment() {
         binding.AppVersion.text = "Версия: v${versionName}"
 
         return root
+    }
+
+    @SuppressLint("SetTextI18n")
+    fun showCustomDiffDialog() {
+        val context = requireContext()
+        val settingsViewModel =
+            ViewModelProvider(this).get(SettingsViewModel::class.java)
+        val game_settings = SettingsPreferences.loadGameSettings(context)
+
+        val dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_customdiff, null)
+        val customRows = dialogView.findViewById<EditText>(R.id.CustomRows)
+        val customCols = dialogView.findViewById<EditText>(R.id.CustomCols)
+        val customMines = dialogView.findViewById<EditText>(R.id.CustomMines)
+
+        customRows.setText(game_settings.rows.toString())
+        customCols.setText(game_settings.cols.toString())
+        customMines.setText(game_settings.mineCount.toString())
+
+        val dialog = MaterialAlertDialogBuilder(context)
+            .setTitle("Пользовательские настройки поля")
+            .setView(dialogView)
+            .setPositiveButton("Принять", null)
+            .setNegativeButton("Отмена", null)
+            .create()
+
+        dialog.setOnShowListener {
+            val positiveButton = dialog.getButton(DialogInterface.BUTTON_POSITIVE)
+            positiveButton.setOnClickListener {
+                val rowsStr = customRows.text.toString()
+                val colsStr = customCols.text.toString()
+                val minesStr = customMines.text.toString()
+
+                if (rowsStr.isEmpty() || colsStr.isEmpty() || minesStr.isEmpty()) {
+                    Toast.makeText(context, "Заполните все поля", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+
+                val rows = rowsStr.toIntOrNull()
+                val cols = colsStr.toIntOrNull()
+                val mines = minesStr.toIntOrNull()
+
+                if (rows == null || cols == null || mines == null) {
+                    Toast.makeText(context, "Введите корректные числа", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+
+                if (rows <= 0 || cols <= 0 || mines <= 0) {
+                    Toast.makeText(context, "Числа должны быть больше нуля", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+
+                if (rows < 5 || cols < 5) {
+                    Toast.makeText(context, "Минимальный размер поля: 5х5", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+
+                if (rows > 40 || cols > 40) {
+                    Toast.makeText(context, "Максимальный размер поля: 40х40", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+
+                if (mines - 9 > rows * cols) {
+                    val max = rows * cols - 9
+                    Toast.makeText(context, "Максимум мин для этого поля: ${max}", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+
+                settingsViewModel.setGameSettings(3, rows, cols, mines)
+                SettingsPreferences.saveGameSettings(context, 3, rows, cols, mines)
+                dialog.dismiss()
+            }
+        }
+        dialog.show()
     }
 
     override fun onDestroyView() {

@@ -11,7 +11,6 @@ import com.example.virus.tupominesweeper.stuff.GameStatePreferences
 import com.example.virus.tupominesweeper.stuff.SettingsPreferences
 import com.example.virus.tupominesweeper.viewmodels.GameTimerViewModel
 import com.example.virus.tupominesweeper.viewmodels.MainpageViewModel
-import com.example.virus.tupominesweeper.viewmodels.SettingsViewModel
 
 class MainpageFragment : Fragment() {
 
@@ -36,8 +35,6 @@ class MainpageFragment : Fragment() {
         val game_settings = SettingsPreferences.loadGameSettings(requireContext())
         val mainpageViewModel =
             ViewModelProvider(this).get(MainpageViewModel::class.java)
-        val settingsViewModel =
-            ViewModelProvider(this).get(SettingsViewModel::class.java)
         gameTimerViewModel =
             ViewModelProvider(this).get(GameTimerViewModel::class.java)
         _binding = FragmentMainpageBinding.inflate(inflater, container, false)
@@ -52,10 +49,6 @@ class MainpageFragment : Fragment() {
         }
 
         field.setViewModel(mainpageViewModel)
-
-        // settingsViewModel.app_settings.observe(viewLifecycleOwner, { settings ->
-        //     field.setInvertControls(settings.invert)
-        // })
 
         val currentState = mainpageViewModel.game_state
         if (currentState.value != null) {

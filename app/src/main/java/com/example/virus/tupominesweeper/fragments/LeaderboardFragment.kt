@@ -1,5 +1,6 @@
 package com.example.virus.tupominesweeper.fragments
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,10 +8,8 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import com.example.virus.tupominesweeper.databinding.FragmentLeaderboardBinding
 import com.example.virus.tupominesweeper.stuff.RecordManager
-import com.example.virus.tupominesweeper.viewmodels.LeaderboardViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -25,8 +24,6 @@ class LeaderboardFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val leaderboardViewModel =
-            ViewModelProvider(this).get(LeaderboardViewModel::class.java)
         _binding = FragmentLeaderboardBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
@@ -57,6 +54,7 @@ class LeaderboardFragment : Fragment() {
         return root
     }
 
+    @SuppressLint("DefaultLocale")
     fun formatTime(millis: Long): String {
         val seconds = (millis / 1000)
         val h = (seconds / 3600).toInt()

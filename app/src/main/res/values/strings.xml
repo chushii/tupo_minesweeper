@@ -9,4 +9,7 @@
     <string name="setting_theme">Тема:</string>
     <string name="setting_vibration">Включить вибрацию</string>
     <string name="setting_inverter">Инвертировать нажатие/удерживание</string>
+    <string name="customdiff_rows">Количество строк</string>
+    <string name="customdiff_cols">Количество столбцов</string>
+    <string name="customdiff_mines">Количество мин</string>
 </resources>
