@@ -140,4 +140,16 @@
     <color name="md_theme_surfaceContainer_highContrast">#E2E2E9</color>
     <color name="md_theme_surfaceContainerHigh_highContrast">#D3D4DB</color>
     <color name="md_theme_surfaceContainerHighest_highContrast">#C5C6CD</color>
+
+    <color name="field_cellClosed">#EAEAEA</color>
+    <color name="field_cellOpened">#CCCCCC</color>
+    <color name="field_grid">#909090</color>
+    <color name="field_num1">#0004F4</color>
+    <color name="field_num2">#037D06</color>
+    <color name="field_num3">#F90304</color>
+    <color name="field_num4">#000180</color>
+    <color name="field_num5">#7B0302</color>
+    <color name="field_num6">#04807E</color>
+    <color name="field_num7">#000000</color>
+    <color name="field_num8">#FFFFFF</color>
 </resources>

@@ -3,4 +3,13 @@
     <string name="title_leaderboard">Лидерборд</string>
     <string name="title_mainpage">Главная</string>
     <string name="title_settings">Настройки</string>
+    <string name="mines_counter">Мины:</string>
+    <string name="button_reset">Новая игра</string>
+    <string name="setting_difficulty">Уровень сложности:</string>
+    <string name="setting_theme">Тема:</string>
+    <string name="setting_vibration">Включить вибрацию</string>
+    <string name="setting_inverter">Инвертировать нажатие/удерживание</string>
+    <string name="customdiff_rows">Количество строк</string>
+    <string name="customdiff_cols">Количество столбцов</string>
+    <string name="customdiff_mines">Количество мин</string>
 </resources>
