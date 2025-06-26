@@ -60,13 +60,15 @@ class MainpageFragment : Fragment() {
         val currentState = mainpageViewModel.game_state
         if (currentState.value != null) {
             field.restoreGame(currentState.value!!)
-            gameTimerViewModel.start(gameTimerViewModel.elapsedTime.value ?: 0)
+            if (!mainpageViewModel.gameEnded)
+                gameTimerViewModel.start(gameTimerViewModel.elapsedTime.value ?: 0)
         } else if (savedState != null) {
             mainpageViewModel.loadGameState(savedState)
             field.restoreGame(savedState)
-            gameTimerViewModel.start(GameStatePreferences.loadTimeSpent(requireContext()))
+            if (!mainpageViewModel.gameEnded)
+                gameTimerViewModel.start(GameStatePreferences.loadTimeSpent(requireContext()))
         } else {
-            mainpageViewModel.resetGame(game_settings.rows, game_settings.cols, game_settings.mineCount)
+            mainpageViewModel.resetGame(game_settings.diff, game_settings.rows, game_settings.cols, game_settings.mineCount)
             field.resetGame(game_settings)
             gameTimerViewModel.reset()
             gameTimerViewModel.start(0)
@@ -91,7 +93,10 @@ class MainpageFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        gameTimerViewModel.start(gameTimerViewModel.elapsedTime.value ?: 0)
+        val mainpageViewModel =
+            ViewModelProvider(this).get(MainpageViewModel::class.java)
+        if (!mainpageViewModel.gameEnded)
+            gameTimerViewModel.start(gameTimerViewModel.elapsedTime.value ?: 0)
     }
 
     override fun onPause() {

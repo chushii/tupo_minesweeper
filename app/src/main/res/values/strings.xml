@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">Тупо Сапёр</string>
-    <string name="app_version">Версия v0.3</string>
     <string name="title_leaderboard">Лидерборд</string>
     <string name="title_mainpage">Главная</string>
     <string name="title_settings">Настройки</string>

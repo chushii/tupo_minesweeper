@@ -10,6 +10,7 @@ import android.view.MotionEvent
 import android.view.ScaleGestureDetector
 import android.view.View
 import com.example.virus.tupominesweeper.stuff.GameStatePreferences
+import com.example.virus.tupominesweeper.stuff.RecordManager
 import com.example.virus.tupominesweeper.stuff.VibratorControl
 import com.example.virus.tupominesweeper.viewmodels.MainpageViewModel
 import com.example.virus.tupominesweeper.viewmodels.SettingsViewModel
@@ -39,6 +40,7 @@ class FieldView @JvmOverloads constructor(
 
     private var gameEnded = false
     private var hasWon = false
+    private var recordSet = false
     private var minesGenerated = false
     private var firstClickRow = -1
     private var firstClickCol = -1
@@ -79,12 +81,14 @@ class FieldView @JvmOverloads constructor(
     }
 
     fun restoreGame(state: MainpageViewModel.GameState) {
+        diff = state.diff
         rows = state.rows
         cols = state.cols
         mineCount = state.mineCount
         cells = state.cells
         gameEnded = state.gameEnded
         hasWon = state.hasWon
+        recordSet = state.recordSet
         minesGenerated = state.minesGenerated
         invalidate()
     }
@@ -97,11 +101,12 @@ class FieldView @JvmOverloads constructor(
         cellSize = baseCellSize
         gameEnded = false
         hasWon = false
+        recordSet = false
         minesGenerated = false
         firstClickRow = -1
         firstClickCol = -1
         cells = Array(rows) { Array(cols) { MainpageViewModel.Cell() } }
-        viewModel!!.resetGame(rows, cols, mineCount)
+        viewModel!!.resetGame(diff, rows, cols, mineCount)
         invalidate()
     }
 
@@ -242,7 +247,25 @@ class FieldView @JvmOverloads constructor(
 
         paint.textSize = 100f * (cellSize / baseCellSize)
         paint.color = android.graphics.Color.WHITE
-        val text = if (hasWon) "Победа!" else "ПОМЕР"
+        var newRecord: Boolean
+        var text: String
+        if (!hasWon) {
+            text ="Вы проиграли!"
+        }
+        else {
+            if (!recordSet) {
+                val score = GameStatePreferences.loadTimeSpent(context)
+                val maybe = RecordManager.willMyRecordSave(context, diff, score)
+                if (maybe) {
+                    RecordManager.updateRecords(context, diff, score)
+                    recordSet = true
+                }
+                text = if (recordSet) "Новый рекорд!" else "Вы победили!"
+            }
+            else {
+                text = "Новый рекорд!"
+            }
+        }
 
         val textWidth = paint.measureText(text)
         canvas.drawText(

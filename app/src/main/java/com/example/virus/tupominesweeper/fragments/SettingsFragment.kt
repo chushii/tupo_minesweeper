@@ -28,6 +28,9 @@ class SettingsFragment : Fragment() {
         val settingsViewModel =
             ViewModelProvider(this).get(SettingsViewModel::class.java)
         _binding = FragmentSettingsBinding.inflate(inflater, container, false)
+        val packageManager = requireContext().packageManager
+        val info = packageManager.getPackageInfo(requireContext().packageName, 0)
+        val versionName = info.versionName
         val root: View = binding.root
 
         val diffs = arrayOf("Легкий", "Средний", "Сложный", "Пользовательский")
@@ -101,6 +104,8 @@ class SettingsFragment : Fragment() {
             settingsViewModel.setInvert(isChecked)
             SettingsPreferences.saveInvert(requireContext(), isChecked)
         }
+
+        binding.AppVersion.text = "Версия: v${versionName}"
 
         return root
     }

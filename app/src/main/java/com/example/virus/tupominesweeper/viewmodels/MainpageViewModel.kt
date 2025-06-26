@@ -8,13 +8,18 @@ class MainpageViewModel : ViewModel() {
     private val _game_state = MutableLiveData<GameState?>()
     val game_state: LiveData<GameState?> get() = _game_state
 
+    var gameEnded = false
+        private set
+
     fun loadGameState(state: GameState?) {
         _game_state.value = state
     }
 
-    fun resetGame(rows: Int, cols: Int, mineCount: Int) {
+    fun resetGame(diff: Int, rows: Int, cols: Int, mineCount: Int) {
+        gameEnded = false
         val cells = Array(rows) { Array(cols) { Cell() } }
-        _game_state.value = GameState(rows, cols, mineCount, cells, false, false, false)
+        _game_state.value = GameState(diff, rows, cols, mineCount, cells,
+            false, false, false, false)
     }
 
     fun updateGameStateCells(cells: Array<Array<Cell>>) {
@@ -34,6 +39,7 @@ class MainpageViewModel : ViewModel() {
             gameEnded = gameEnded,
             hasWon = hasWon
         )
+        this.gameEnded = true
     }
 
     fun getMinesCounter(cells: Array<Array<Cell>>, mines: Int): Int {
@@ -44,12 +50,14 @@ class MainpageViewModel : ViewModel() {
     }
 
     data class GameState(
+        val diff: Int,
         val rows: Int,
         val cols: Int,
         val mineCount: Int,
         val cells: Array<Array<Cell>>,
         val gameEnded: Boolean,
         val hasWon: Boolean,
+        val recordSet: Boolean,
         val minesGenerated: Boolean
     )
 

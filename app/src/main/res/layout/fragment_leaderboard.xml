@@ -40,8 +40,8 @@
 
     </androidx.cardview.widget.CardView>
 
-    <TextView
-        android:id="@+id/Leaderboard_WIP"
+    <ListView
+        android:id="@+id/Leaderboard"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="24dp"
@@ -49,9 +49,6 @@
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="24dp"
         android:background="@color/md_theme_surfaceContainer"
-        android:gravity="center"
-        android:text="Лидерборд (WIP)"
-        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
