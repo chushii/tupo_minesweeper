@@ -11,6 +11,8 @@ import android.view.ScaleGestureDetector
 import android.view.View
 import com.example.virus.tupominesweeper.stuff.GameStatePreferences
 import com.example.virus.tupominesweeper.stuff.RecordManager
+import com.example.virus.tupominesweeper.stuff.SettingsPreferences.NAME
+import com.example.virus.tupominesweeper.stuff.SettingsPreferences.VIBRATION_KEY
 import com.example.virus.tupominesweeper.stuff.VibratorControl
 import com.example.virus.tupominesweeper.viewmodels.MainpageViewModel
 import com.example.virus.tupominesweeper.viewmodels.SettingsViewModel
@@ -74,6 +76,8 @@ class FieldView @JvmOverloads constructor(
         ic_mine?.setBounds(0, 0, cellSize.toInt(), cellSize.toInt())
         ic_flag?.setTint(ContextCompat.getColor(context, R.color.field_num7))
         ic_mine?.setTint(ContextCompat.getColor(context, R.color.field_num7))
+        val sharedPref = context.getSharedPreferences("settings", Context.MODE_PRIVATE)
+        invertControls = sharedPref.getBoolean("invert", false)
     }
 
     fun setViewModel(viewModel: MainpageViewModel) {
@@ -108,10 +112,6 @@ class FieldView @JvmOverloads constructor(
         cells = Array(rows) { Array(cols) { MainpageViewModel.Cell() } }
         viewModel!!.resetGame(diff, rows, cols, mineCount)
         invalidate()
-    }
-
-    fun setInvertControls(invert: Boolean) {
-        this.invertControls = invert
     }
 
     override fun onDraw(canvas: Canvas) {

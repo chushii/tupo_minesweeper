@@ -53,9 +53,9 @@ class MainpageFragment : Fragment() {
 
         field.setViewModel(mainpageViewModel)
 
-        settingsViewModel.app_settings.observe(viewLifecycleOwner, { settings ->
-            field.setInvertControls(settings.invert)
-        })
+        // settingsViewModel.app_settings.observe(viewLifecycleOwner, { settings ->
+        //     field.setInvertControls(settings.invert)
+        // })
 
         val currentState = mainpageViewModel.game_state
         if (currentState.value != null) {
